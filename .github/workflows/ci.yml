@@ -9,19 +9,23 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: true
       matrix:
         php: ['8.1', '8.2']
-        laravel: ['9.*', '10.*']
+        laravel: ['9.*', '10.*', '11.*']
         include:
-          - laravel: '9.*'
-            testbench: '7.*'
-          - laravel: '10.*'
-            testbench: '8.*'
+          - laravel: 9.*
+            testbench: 7.*
+          - laravel: 10.*
+            testbench: 8.*
+          - laravel: 11.*
+            testbench: 9.*
+        exclude:
+          - laravel: 11.*
+            php: '8.1'
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
@@ -47,29 +51,25 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
-      # Lower PHP and laravel versions.
-
       - name: PHPUnit without code coverage
-        if: matrix.php != '8.2' || matrix.laravel != '10.*'
+        if: "matrix.php != '8.2' || matrix.laravel != '10.*'"
         run: vendor/bin/phpunit --no-coverage
 
-      # Last PHP and laravel versions.
-
       - name: Code analysis
-        if: matrix.php == '8.2' && matrix.laravel == '10.*'
+        if: "matrix.php == '8.2' && matrix.laravel == '10.*'"
         run: |
           vendor/bin/pint --test -vvv
           vendor/bin/phpmd config,src,tests text phpmd.xml
           vendor/bin/phpstan analyse
 
       - name: PHPUnit with code coverage
-        if: matrix.php == '8.2' && matrix.laravel == '10.*'
+        if: "matrix.php == '8.2' && matrix.laravel == '10.*'"
         run: |
           mkdir -p build/logs
           vendor/bin/phpunit --coverage-text --coverage-clover build/logs/clover.xml
 
       - name: Code coverage upload to Coveralls
-        if: env.COVERALLS_REPO_TOKEN && matrix.php == '8.2' && matrix.laravel == '10.*'
+        if: "env.COVERALLS_REPO_TOKEN && matrix.php == '8.2' && matrix.laravel == '10.*'"
         env:
           COVERALLS_RUN_LOCALLY: 1
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

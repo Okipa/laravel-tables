@@ -27,16 +27,16 @@
     ],
     "require": {
         "php": "8.1.*|8.2.*",
-        "illuminate/contracts": "^9.0|^10.0",
-        "livewire/livewire": "^2.0"
+        "illuminate/contracts": "^9.0|^10.0|^11.0",
+        "livewire/livewire": "^2.0|^3.4"
     },
     "require-dev": {
         "ext-pdo": "*",
-        "brianium/paratest": "^6.4",
+        "brianium/paratest": "^6.4|^7.4",
         "laravel/pint": "^1.1",
-        "nunomaduro/collision": "^6.0",
+        "nunomaduro/collision": "^6.0|^8.0",
         "nunomaduro/larastan": "^2.0",
-        "orchestra/testbench": "^7.0|^8.0",
+        "orchestra/testbench": "^7.0|^8.0|^9.0",
         "phpmd/phpmd": "^2.11"
     },
     "autoload": {
@@ -51,11 +51,18 @@
         }
     },
     "scripts": {
-        "pint": ["vendor/bin/pint"],
+        "pint": [
+            "vendor/bin/pint"
+        ],
         "phpmd": "vendor/bin/phpmd config,src,tests text phpmd.xml",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=2G",
-        "phpunit" : "vendor/bin/phpunit",
-        "test": ["@pint", "@phpmd", "@phpstan", "@phpunit"]
+        "phpunit": "vendor/bin/phpunit",
+        "test": [
+            "@pint",
+            "@phpmd",
+            "@phpstan",
+            "@phpunit"
+        ]
     },
     "extra": {
         "laravel": {
