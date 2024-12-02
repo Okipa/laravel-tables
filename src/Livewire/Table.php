@@ -230,7 +230,7 @@ class Table extends Component
         foreach ($reorderedPositions->sortBy('position') as $reorderedPosition) {
             app($modelClass)->find($reorderedPosition['modelKey'])->update([$reorderAttribute => $startOrder++]);
         }
-        $this->emit('laraveltable:action:feedback', __('The list has been reordered.'));
+        $this->dispatch('laraveltable:action:feedback', __('The list has been reordered.'));
     }
 
     public function changeNumberOfRowsPerPage(int $numberOfRowsPerPage): void
@@ -268,7 +268,7 @@ class Table extends Component
     {
         $this->selectedFilters = [];
         $this->resetFilters = true;
-        $this->emitSelf('laraveltable:filters:wire:ignore:cancel');
+        $this->dispatch('laraveltable:filters:wire:ignore:cancel');
     }
 
     public function cancelWireIgnoreOnFilters(): void
@@ -295,7 +295,7 @@ class Table extends Component
             return null;
         }
         if ($requiresConfirmation) {
-            return $this->emit(
+            return $this->dispatch(
                 'laraveltable:action:confirm',
                 'bulkAction',
                 $identifier,
@@ -305,7 +305,7 @@ class Table extends Component
         }
         $feedbackMessage = $bulkActionInstance->getFeedbackMessage();
         if ($feedbackMessage) {
-            $this->emit('laraveltable:action:feedback', $feedbackMessage);
+            $this->dispatch('laraveltable:action:feedback', $feedbackMessage);
         }
         $models = app($bulkActionInstance->modelClass)->findMany($bulkActionInstance->allowedModelKeys);
 
@@ -325,7 +325,7 @@ class Table extends Component
         }
         $model = app($rowActionArray['modelClass'])->findOrFail($modelKey);
         if ($requiresConfirmation) {
-            return $this->emit(
+            return $this->dispatch(
                 'laraveltable:action:confirm',
                 'rowAction',
                 $identifier,
@@ -335,7 +335,7 @@ class Table extends Component
         }
         $feedbackMessage = $rowActionInstance->getFeedbackMessage($model);
         if ($feedbackMessage) {
-            $this->emit('laraveltable:action:feedback', $feedbackMessage);
+            $this->dispatch('laraveltable:action:feedback', $feedbackMessage);
         }
 
         return $rowActionInstance->action($model, $this);
@@ -353,7 +353,7 @@ class Table extends Component
         }
         $model = app($columnActionArray['modelClass'])->findOrFail($modelKey);
         if ($requiresConfirmation) {
-            return $this->emit(
+            return $this->dispatch(
                 'laraveltable:action:confirm',
                 'columnAction',
                 $identifier,
@@ -363,7 +363,7 @@ class Table extends Component
         }
         $feedbackMessage = $columnActionInstance->getFeedbackMessage($model, $identifier);
         if ($feedbackMessage) {
-            $this->emit('laraveltable:action:feedback', $feedbackMessage);
+            $this->dispatch('laraveltable:action:feedback', $feedbackMessage);
         }
 
         return $columnActionInstance->action($model, $identifier, $this);
@@ -375,6 +375,6 @@ class Table extends Component
             return;
         }
         $this->configParams = [...$this->configParams, ...$configParams];
-        $this->emitSelf('$refresh');
+        $this->dispatch('$refresh');
     }
 }

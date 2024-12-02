@@ -54,7 +54,7 @@ class RedirectRowAction extends AbstractRowAction
     public function action(Model $model, Component $livewire): void
     {
         $this->openInNewWindow
-            ? $livewire->emit('laraveltable:link:open:newtab', $this->url)
+            ? $livewire->dispatch('laraveltable:link:open:newtab', $this->url)
             : redirect()->to($this->url);
     }
 }
